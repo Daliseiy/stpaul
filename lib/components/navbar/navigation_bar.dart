@@ -25,7 +25,7 @@ class NavigationBar extends StatelessWidget {
                 controller.openOrCloseDrawer();
               },
               icon: Icon(Icons.menu),
-              color: Colors.purple,
+              color: Colors.white,
             ),
           Text(
             'St Paul Anglican',
