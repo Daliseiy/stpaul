@@ -7,8 +7,6 @@ import 'package:stpaulanglicanchurh/providers/data_provider.dart';
 import 'firebase_options.dart';
 import 'package:stpaulanglicanchurh/providers/burial_provider.dart';
 import 'package:stpaulanglicanchurh/screens/about/about.dart';
-import 'package:stpaulanglicanchurh/screens/articles/article.dart';
-import 'package:stpaulanglicanchurh/screens/form/burial.dart';
 import 'package:stpaulanglicanchurh/screens/home/home.dart';
 import 'package:stpaulanglicanchurh/screens/projects/projects.dart';
 

@@ -7,7 +7,6 @@ import 'package:stpaulanglicanchurh/components/navbar/side_menu.dart';
 import 'package:stpaulanglicanchurh/constant.dart';
 import 'package:stpaulanglicanchurh/controllers/controller.dart';
 import 'package:stpaulanglicanchurh/responsive.dart';
-import 'package:stpaulanglicanchurh/screens/about/about.dart';
 import 'package:stpaulanglicanchurh/screens/form/burial.dart';
 import 'package:stpaulanglicanchurh/screens/home/components/activity.dart';
 import 'package:stpaulanglicanchurh/screens/home/components/belief.dart';
@@ -41,7 +40,8 @@ class HomePage extends StatelessWidget {
                   vertical: defaultPadding),
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/header.jpg'),
+                  image: NetworkImage(
+                      'https://res.cloudinary.com/daliseiy/image/upload/v1641914402/stpaul/header_mrvwsf.jpg'),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
                       Colors.black.withOpacity(0.7), BlendMode.darken),

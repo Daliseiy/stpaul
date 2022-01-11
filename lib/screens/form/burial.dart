@@ -198,7 +198,7 @@ class _FormDataState extends State<FormData> {
               validator: (value) {
                 bool isInt = int.tryParse(value as String) == null;
 
-                if (value == null || value.isEmpty) {
+                if (value.isEmpty) {
                   return 'This field is required';
                 }
                 if (isInt) {
@@ -218,7 +218,6 @@ class _FormDataState extends State<FormData> {
                         setState(() {
                           selectedDate = pickedD;
                         });
-                        ;
                       },
                       child: Text('Select Date of Birth - ')),
                   Text(
@@ -282,7 +281,6 @@ class _FormDataState extends State<FormData> {
                             setState(() {
                               baptismDate = pickedD;
                             });
-                            ;
                           },
                           child: Text('Select Date of Baptism - ')),
                       Text(
@@ -411,7 +409,6 @@ class _FormDataBState extends State<FormDataB> {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     Map initData = Provider.of<BurialProvider>(context).getFormDataB();
     setState(() {
       initformData = initData;
@@ -472,7 +469,6 @@ class _FormDataBState extends State<FormDataB> {
                             setState(() {
                               confirmationDate = pickedD;
                             });
-                            ;
                           },
                           child: Text('Select Date of Confirmation - ')),
                       Text(
@@ -514,7 +510,6 @@ class _FormDataBState extends State<FormDataB> {
                             setState(() {
                               marriageDate = pickedD;
                             });
-                            ;
                           },
                           child: Text('Select Date of Marriage - ')),
                       Text(
@@ -557,7 +552,6 @@ class _FormDataBState extends State<FormDataB> {
                             setState(() {
                               dateOfDeath = pickedD;
                             });
-                            ;
                           },
                           child: Text('Select Date of Death - ')),
                       Text(
@@ -576,7 +570,6 @@ class _FormDataBState extends State<FormDataB> {
                             setState(() {
                               wakeWeepDate = pickedD;
                             });
-                            ;
                           },
                           child: Text('Date of Wake Weeping (if any) - ')),
                       Text(
@@ -602,7 +595,6 @@ class _FormDataBState extends State<FormDataB> {
                             setState(() {
                               burialDate = pickedD;
                             });
-                            ;
                           },
                           child: Text('Select Date of Burial - ')),
                       Text(
@@ -642,7 +634,6 @@ class _FormDataBState extends State<FormDataB> {
                         setState(() {
                           outingDate = pickedD;
                         });
-                        ;
                       },
                       child: Text('Date & TIme requested for outing - ')),
                   Text(
@@ -807,6 +798,7 @@ class _FinalFormState extends State<FinalForm> {
 
   @override
   void didChangeDependencies() {
+    // ignore: todo
     // TODO: implement didChangeDependencies
     Map initData = Provider.of<BurialProvider>(context).getFormDataC();
     setState(() {

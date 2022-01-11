@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:get/get.dart';
 import 'package:stpaulanglicanchurh/controllers/controller.dart';
 import '../../constant.dart';
 import '../../responsive.dart';

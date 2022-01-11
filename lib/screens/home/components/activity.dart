@@ -15,7 +15,8 @@ class ActivitySection extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
           image: DecorationImage(
-        image: AssetImage('assets/images/event2.jpg'),
+        image: NetworkImage(
+            'https://res.cloudinary.com/daliseiy/image/upload/v1641914406/stpaul/event2_d3dpqk.jpg'),
         fit: BoxFit.cover,
         colorFilter:
             ColorFilter.mode(Colors.black.withOpacity(0.7), BlendMode.darken),
