@@ -49,7 +49,7 @@ class HomePage extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      NavigationBar(
+                      NavBar(
                         color: Colors.white,
                         controller: _controller,
                       ),

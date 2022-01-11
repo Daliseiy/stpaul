@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:stpaulanglicanchurh/constant.dart';
+import 'package:stpaulanglicanchurh/providers/data_provider.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../../responsive.dart';
 
@@ -141,83 +145,176 @@ class ContactSection extends StatelessWidget {
   }
 }
 
-class IInputForm extends StatelessWidget {
-  final String title;
-  bool isRequired = false;
-  IInputForm({
+class ContactForm extends StatefulWidget {
+  ContactForm({
     Key? key,
-    required this.title,
-    this.isRequired = false,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Expanded(
-            child: TextField(
-          style: GoogleFonts.openSans(fontWeight: FontWeight.w400),
-          decoration: InputDecoration(
-            labelText: title,
-            labelStyle: GoogleFonts.montserrat(
-                color: Colors.black.withOpacity(0.6),
-                letterSpacing: 1.5,
-                fontSize: 12,
-                fontWeight: FontWeight.bold),
-            suffixIcon: isRequired
-                ? Icon(
-                    Icons.star,
-                    color: Colors.red,
-                    size: 10,
-                  )
-                : null,
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide(
-                color: Colors.blue,
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-              borderSide:
-                  BorderSide(color: Colors.black.withOpacity(0.6), width: 0.7),
-            ),
-          ),
-        ))
-      ],
-    );
-  }
+  _ContactFormState createState() => _ContactFormState();
 }
 
-class ContactForm extends StatelessWidget {
-  const ContactForm({
-    Key? key,
-  }) : super(key: key);
+class _ContactFormState extends State<ContactForm> {
+  String? fullName;
+  String? phoneNumber;
+  String? email;
+  String? message;
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool _isLoading = false;
+
+  void _submitForm() {
+    final isValid = _formKey.currentState!.validate();
+    if (!isValid) {
+      return;
+    }
+    setState(() {
+      _isLoading = true;
+    });
+    _formKey.currentState!.save();
+    Provider.of<DataProvider>(context, listen: false)
+        .addContact(fullName, phoneNumber, email, message)
+        .then((value) {
+      setState(() {
+        _isLoading = false;
+      });
+      showTopSnackBar(
+        context,
+        CustomSnackBar.success(
+          backgroundColor: Color(0xff001242),
+          message: "Your message has being recieved. We'll get back to you.",
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
       child: Column(
         children: [
-          IInputForm(
-            title: 'NAME',
-            isRequired: true,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                  child: TextFormField(
+                style: TextStyle(fontWeight: FontWeight.w400),
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  labelStyle: GoogleFonts.montserrat(
+                      color: Colors.black.withOpacity(0.6),
+                      letterSpacing: 1.5,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(
+                      color: Color(0xff001242),
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide:
+                        BorderSide(color: Color(0xff001242), width: 0.7),
+                  ),
+                ),
+                onSaved: (newValue) => fullName = newValue,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'This field is required';
+                  }
+                },
+              ))
+            ],
           ),
           SizedBox(height: defaultPadding + 4),
-          IInputForm(
-            title: 'PHONE',
-            isRequired: true,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                  child: TextFormField(
+                style: TextStyle(fontWeight: FontWeight.w400),
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Phone',
+                  labelStyle: GoogleFonts.montserrat(
+                      color: Colors.black.withOpacity(0.6),
+                      letterSpacing: 1.5,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(
+                      color: Color(0xff001242),
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide:
+                        BorderSide(color: Color(0xff001242), width: 0.7),
+                  ),
+                ),
+                onSaved: (newValue) => phoneNumber = newValue,
+                validator: (value) {
+                  bool isInt = int.tryParse(value as String) == null;
+
+                  if (value.isEmpty) {
+                    return 'This field is required';
+                  }
+                  if (value.length < 11 || value.length > 12) {
+                    return 'This number is not valid';
+                  }
+                  if (isInt) {
+                    return 'Enter a valid phone number';
+                  }
+                },
+              ))
+            ],
           ),
           SizedBox(height: defaultPadding + 4),
-          IInputForm(
-            title: 'EMAIL',
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                  child: TextFormField(
+                style: TextStyle(fontWeight: FontWeight.w400),
+                decoration: InputDecoration(
+                  labelText: 'E-mail',
+                  labelStyle: GoogleFonts.montserrat(
+                      color: Colors.black.withOpacity(0.6),
+                      letterSpacing: 1.5,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(
+                      color: Color(0xff001242),
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide:
+                        BorderSide(color: Color(0xff001242), width: 0.7),
+                  ),
+                ),
+                onSaved: (newValue) => email = newValue,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'This field is required';
+                  } else if (!emailValidatorRegExp.hasMatch(value)) {
+                    return 'Enter a valid email address.';
+                  }
+                  return null;
+                },
+              ))
+            ],
           ),
           SizedBox(height: defaultPadding + 4),
           Row(
             children: [
               Expanded(
-                  child: TextField(
+                  child: TextFormField(
                 maxLines: 3,
                 style: GoogleFonts.openSans(fontWeight: FontWeight.w400),
                 decoration: InputDecoration(
@@ -229,68 +326,80 @@ class ContactForm extends StatelessWidget {
                       fontWeight: FontWeight.bold),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Colors.blue,
+                      color: Color(0xff001242),
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Colors.black.withOpacity(0.6), width: 0.7),
+                    borderSide:
+                        BorderSide(color: Color(0xff001242), width: 0.7),
                   ),
                 ),
+                onSaved: (newValue) => message = newValue,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'This field is required';
+                  }
+                },
               ))
             ],
           ),
           SizedBox(height: 30),
-          Responsive.isDesktop(context)
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    MaterialButton(
-                      onPressed: () {},
-                      color: Color(0xff001242),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25)),
-                      child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 70, vertical: 16),
-                        child: Text('SUBMIT',
-                            textAlign: TextAlign.end,
-                            style: GoogleFonts.montserrat(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 1)),
-                      ),
-                    ),
-                  ],
+          _isLoading
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0xff001242),
+                  ),
                 )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      height: defaultPadding,
-                    ),
-                    FittedBox(
-                      child: MaterialButton(
-                        onPressed: () {},
-                        color: Color(0xff001242),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25)),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 70, vertical: 16),
-                          child: Text('SUBMIT',
-                              textAlign: TextAlign.end,
-                              style: GoogleFonts.montserrat(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 1)),
+              : Responsive.isDesktop(context)
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        MaterialButton(
+                          onPressed: () => _submitForm(),
+                          color: Color(0xff001242),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25)),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 70, vertical: 16),
+                            child: Text('SUBMIT',
+                                textAlign: TextAlign.end,
+                                style: GoogleFonts.montserrat(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 1)),
+                          ),
                         ),
-                      ),
+                      ],
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          height: defaultPadding,
+                        ),
+                        FittedBox(
+                          child: MaterialButton(
+                            onPressed: () => _submitForm(),
+                            color: Color(0xff001242),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25)),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 70, vertical: 16),
+                              child: Text('SUBMIT',
+                                  textAlign: TextAlign.end,
+                                  style: GoogleFonts.montserrat(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 1)),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
         ],
       ),
     );

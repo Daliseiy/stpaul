@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:stpaulanglicanchurh/providers/data_provider.dart';
 
 import '../../../constant.dart';
 import '../../../responsive.dart';
@@ -15,11 +20,14 @@ class _TestimonySectionState extends State<TestimonySection> {
   String? phoneNumber;
   String? testimony;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   Future showTestimonyDialog() {
     return showDialog(
         context: context,
-        builder: (ctx) => AlertDialog(
+        builder: (ctx) {
+          return StatefulBuilder(builder: (ctx, setState) {
+            return AlertDialog(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25)),
               content: Container(
@@ -32,10 +40,15 @@ class _TestimonySectionState extends State<TestimonySection> {
                       children: [
                         Text(
                           'Share Your \nTestimony!',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline3!
-                              .copyWith(color: Color(0xff001242)),
+                          style: Responsive.isDesktop(context)
+                              ? Theme.of(context)
+                                  .textTheme
+                                  .headline3!
+                                  .copyWith(color: Color(0xff001242))
+                              : Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(color: Color(0xff001242)),
                         ),
                         SizedBox(
                           height: defaultPadding * 2,
@@ -93,6 +106,7 @@ class _TestimonySectionState extends State<TestimonySection> {
                         ),
                         TextFormField(
                           initialValue: testimony,
+                          maxLines: 3,
                           decoration: InputDecoration(
                             labelText: 'Enter your testimony here',
                             enabledBorder: UnderlineInputBorder(
@@ -116,25 +130,63 @@ class _TestimonySectionState extends State<TestimonySection> {
                         SizedBox(
                           height: defaultPadding * 2,
                         ),
-                        MaterialButton(
-                          onPressed: () {},
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25)),
-                          color: Color(0xff001242),
-                          child: Padding(
-                            padding: EdgeInsets.all(defaultPadding),
-                            child: Text(
-                              'Share Your Testimony',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        )
+                        _isLoading
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                  color: Color(0xff001242),
+                                ),
+                              )
+                            : MaterialButton(
+                                onPressed: () async {
+                                  final isValid =
+                                      _formKey.currentState!.validate();
+                                  if (!isValid) {
+                                    return;
+                                  } else {
+                                    setState(() {
+                                      _isLoading = true;
+                                      print('the state has been changed');
+                                    });
+                                  }
+                                  _formKey.currentState!.save();
+
+                                  await Provider.of<DataProvider>(context,
+                                          listen: false)
+                                      .addTestimony(
+                                          fullName, phoneNumber, testimony)
+                                      .then((value) {
+                                    setState(() {
+                                      _isLoading = false;
+                                    });
+                                    showTopSnackBar(
+                                      context,
+                                      CustomSnackBar.success(
+                                        backgroundColor: Color(0xff001242),
+                                        message:
+                                            "Your testimony has being recieved. Thank you.",
+                                      ),
+                                    );
+                                  });
+                                },
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25)),
+                                color: Color(0xff001242),
+                                child: Padding(
+                                  padding: EdgeInsets.all(defaultPadding),
+                                  child: Text(
+                                    'Share Your Testimony',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              )
                       ],
                     ),
                   ),
                 ),
               ),
-            ));
+            );
+          });
+        });
   }
 
   @override

@@ -5,6 +5,8 @@ import 'package:stpaulanglicanchurh/components/navbar/navigation_bar.dart';
 import 'package:stpaulanglicanchurh/constant.dart';
 import 'package:stpaulanglicanchurh/controllers/controller.dart';
 import 'package:stpaulanglicanchurh/providers/burial_provider.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class BurialForm extends StatefulWidget {
   BurialForm({Key? key}) : super(key: key);
@@ -33,7 +35,7 @@ class _BurialFormState extends State<BurialForm> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              NavigationBar(color: Colors.white, controller: _controller),
+              NavBar(color: Colors.white, controller: _controller),
               SizedBox(
                 height: defaultPadding * 2,
               ),
@@ -103,7 +105,7 @@ class _FormDataState extends State<FormData> {
 
   var _baptismPlace = '';
   DateTime selectedDate = DateTime.now();
-
+  Map initformData = {};
   Future<DateTime> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -124,6 +126,7 @@ class _FormDataState extends State<FormData> {
       return;
     }
     _formKey.currentState!.save();
+
     Provider.of<BurialProvider>(context, listen: false)
         .setFormDataA(_nameOfDeceased, _age, _homeAddress, _businessAddress,
             _stateOfOrigin, _baptismPlace, baptismDate, selectedDate)
@@ -133,20 +136,17 @@ class _FormDataState extends State<FormData> {
 
   @override
   void didChangeDependencies() {
-    print('This is has ben called ...................................');
     // TODO: implement didChangeDependencies
     Map initData = Provider.of<BurialProvider>(context).getFormData();
+
     setState(() {
-      _nameOfDeceased =
-          initData['nameOfDeceased'] == null ? '' : initData['age'];
-      _age = initData['age'] == null ? '' : initData['age'];
-      _nameOfDeceased = initData['homeAddress'] == null ? '' : initData['age'];
-      _businessAddress =
-          initData['businessAddress'] == null ? '' : initData['age'];
-      _stateOfOrigin = initData['stateOfOrigin'] == null ? '' : initData['age'];
-      _baptismPlace = initData['baptismPlace'] == null ? '' : initData['age'];
-      baptismDate = initData['baptismDate'] = DateTime.now();
-      selectedDate = initData['dateOfBirth'] = DateTime.now();
+      initformData = initData;
+      baptismDate = initformData['baptismDate'] == null
+          ? DateTime.now()
+          : initformData['baptismDate'];
+      selectedDate = initformData['dateOfBirth'] == null
+          ? DateTime.now()
+          : initformData['dateOfBirth'];
     });
 
     super.didChangeDependencies();
@@ -177,8 +177,9 @@ class _FormDataState extends State<FormData> {
           Padding(
             padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
-              initialValue: _nameOfDeceased,
+              initialValue: initformData['nameOfDeceased'],
               decoration: InputDecoration(hintText: 'Full name of deceased'),
+              onSaved: (newValue) => _nameOfDeceased = newValue!,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
@@ -190,9 +191,10 @@ class _FormDataState extends State<FormData> {
           Padding(
             padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
-              initialValue: _age,
+              initialValue: initformData['age'],
               decoration: InputDecoration(hintText: 'Age'),
               keyboardType: TextInputType.number,
+              onSaved: (newValue) => _age = newValue!,
               validator: (value) {
                 bool isInt = int.tryParse(value as String) == null;
 
@@ -228,8 +230,9 @@ class _FormDataState extends State<FormData> {
           Padding(
             padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
-              initialValue: _homeAddress,
+              initialValue: initformData['homeAddress'],
               decoration: InputDecoration(hintText: 'Home Address'),
+              onSaved: (newValue) => _homeAddress = newValue!,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
@@ -241,8 +244,9 @@ class _FormDataState extends State<FormData> {
           Padding(
             padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
-              initialValue: _businessAddress,
+              initialValue: initformData['businessAddress'],
               decoration: InputDecoration(hintText: 'Business Address(if any)'),
+              onSaved: (newValue) => _businessAddress = newValue!,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   value = 'None';
@@ -255,7 +259,8 @@ class _FormDataState extends State<FormData> {
           Padding(
             padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
-              initialValue: _stateOfOrigin,
+              initialValue: initformData['stateOfOrigin'],
+              onSaved: (newValue) => _stateOfOrigin = newValue!,
               decoration: InputDecoration(hintText: 'State of Origin'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -290,8 +295,9 @@ class _FormDataState extends State<FormData> {
                 padding: EdgeInsets.all(defaultPadding),
                 child: Container(
                   child: TextFormField(
-                    initialValue: _baptismPlace,
+                    initialValue: initformData['baptismPlace'],
                     decoration: InputDecoration(hintText: 'Place of Baptism'),
+                    onSaved: (newValue) => _baptismPlace = newValue!,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'This field is required';
@@ -351,13 +357,19 @@ class _FormDataBState extends State<FormDataB> {
 
   DateTime wakeWeepDate = DateTime.now();
 
+  DateTime outingDate = DateTime.now();
+
   var society = '';
 
   var activity = '';
 
   var cultStatus = '';
 
+  var serviceRequest = '';
+
   final _formKey = GlobalKey<FormState>();
+
+  Map initformData = {};
 
   Future<DateTime> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -390,9 +402,39 @@ class _FormDataBState extends State<FormDataB> {
             wakeWeepDate,
             society,
             activity,
-            cultStatus)
+            cultStatus,
+            outingDate,
+            serviceRequest)
         .then((value) => widget.pageController.animateToPage(2,
             duration: kDefaultDuration, curve: Curves.easeInOut));
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    Map initData = Provider.of<BurialProvider>(context).getFormDataB();
+    setState(() {
+      initformData = initData;
+      confirmationDate = initformData['confirmationDate'] == null
+          ? DateTime.now()
+          : initformData['confirmationDate'];
+      marriageDate = initformData['marriageDate'] == null
+          ? DateTime.now()
+          : initformData['marriageDate'];
+      dateOfDeath = initformData['dateOfDeath'] == null
+          ? DateTime.now()
+          : initformData['dateOfDeath'];
+      burialDate = initformData['burialDate'] == null
+          ? DateTime.now()
+          : initformData['burialDate'];
+      wakeWeepDate = initformData['wakeKeepDate'] == null
+          ? DateTime.now()
+          : initformData['wakeKeepDate'];
+      outingDate = initformData['outingDate'] == null
+          ? DateTime.now()
+          : initformData['outingDate'];
+    });
+    super.didChangeDependencies();
   }
 
   @override
@@ -443,9 +485,10 @@ class _FormDataBState extends State<FormDataB> {
                 padding: EdgeInsets.all(defaultPadding),
                 child: Container(
                   child: TextFormField(
-                    initialValue: confirmationPlace,
+                    initialValue: initformData['confirmationPlace'],
                     decoration:
                         InputDecoration(hintText: 'Place of Confirmation'),
+                    onSaved: (newValue) => confirmationPlace = newValue!,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'This field is required';
@@ -484,9 +527,10 @@ class _FormDataBState extends State<FormDataB> {
                 padding: EdgeInsets.all(defaultPadding),
                 child: Container(
                   child: TextFormField(
-                    initialValue: partnerName,
+                    initialValue: initformData['partnerName'],
                     decoration:
                         InputDecoration(hintText: 'Name of Spouse (if any)'),
+                    onSaved: (newValue) => partnerName = newValue!,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         value = '';
@@ -571,10 +615,11 @@ class _FormDataBState extends State<FormDataB> {
                 padding: EdgeInsets.all(defaultPadding),
                 child: Container(
                   child: TextFormField(
-                    initialValue: partnerName,
+                    initialValue: initformData['serviceRequest'],
                     decoration: InputDecoration(
                         hintText:
                             'Do you require the service of choir or organ (yes/no)'),
+                    onSaved: (newValue) => serviceRequest = newValue!,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         value = '';
@@ -595,13 +640,13 @@ class _FormDataBState extends State<FormDataB> {
                       onPressed: () async {
                         DateTime pickedD = await _selectDate(context);
                         setState(() {
-                          burialDate = pickedD;
+                          outingDate = pickedD;
                         });
                         ;
                       },
                       child: Text('Date & TIme requested for outing - ')),
                   Text(
-                    '${dateFormat.format(burialDate)}',
+                    '${dateFormat.format(outingDate)}',
                     style: TextStyle(color: Colors.grey),
                   )
                 ],
@@ -610,8 +655,9 @@ class _FormDataBState extends State<FormDataB> {
             padding: EdgeInsets.all(defaultPadding),
             child: Container(
               child: TextFormField(
-                initialValue: society,
+                initialValue: initformData['society'],
                 decoration: InputDecoration(hintText: 'Society in Church'),
+                onSaved: (newValue) => society = newValue!,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'This field is required';
@@ -625,8 +671,9 @@ class _FormDataBState extends State<FormDataB> {
             padding: EdgeInsets.all(defaultPadding),
             child: Container(
               child: TextFormField(
-                initialValue: activity,
+                initialValue: initformData['activity'],
                 decoration: InputDecoration(hintText: 'Church Activities'),
+                onSaved: (newValue) => activity = newValue!,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'This field is required';
@@ -640,9 +687,10 @@ class _FormDataBState extends State<FormDataB> {
             padding: EdgeInsets.all(defaultPadding),
             child: Container(
               child: TextFormField(
-                initialValue: cultStatus,
+                initialValue: initformData['cultStatus'],
                 decoration: InputDecoration(
                     hintText: 'Is the deceased a memeber of any secret cult ?'),
+                onSaved: (newValue) => cultStatus = newValue!,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'This field is required';
@@ -661,8 +709,11 @@ class _FormDataBState extends State<FormDataB> {
               runSpacing: defaultPadding,
               children: [
                 MaterialButton(
-                  onPressed: () => widget.pageController.animateToPage(0,
-                      duration: kDefaultDuration, curve: Curves.easeInOut),
+                  onPressed: () => {
+                    _formKey.currentState!.save(),
+                    widget.pageController.animateToPage(0,
+                        duration: kDefaultDuration, curve: Curves.easeInOut)
+                  },
                   color: Color(0xff1d3557),
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
@@ -709,14 +760,16 @@ class FinalForm extends StatefulWidget {
 class _FinalFormState extends State<FinalForm> {
   final _formKey = GlobalKey<FormState>();
 
-  final firstApplicant = '';
-  final secondApplicant = '';
-  final firstApplicantRelationship = '';
-  final secondApplicantRelationship = '';
-  final language = '';
-  final donate = '';
-  final burialLocation = '';
-  final otherRequest = '';
+  var firstApplicant = '';
+  var secondApplicant = '';
+  var firstApplicantRelationship = '';
+  var secondApplicantRelationship = '';
+  var language = '';
+  var donate = '';
+  var burialLocation = '';
+  var otherRequest = '';
+  bool _isLoading = false;
+  Map initformData = {};
 
   void _submitForm() {
     final isValid = _formKey.currentState!.validate();
@@ -724,7 +777,10 @@ class _FinalFormState extends State<FinalForm> {
       return;
     }
     _formKey.currentState!.save();
-    Provider.of<BurialProvider>(context)
+    setState(() {
+      _isLoading = true;
+    });
+    Provider.of<BurialProvider>(context, listen: false)
         .submitForm(
             firstApplicant,
             secondApplicant,
@@ -734,13 +790,35 @@ class _FinalFormState extends State<FinalForm> {
             donate,
             burialLocation,
             otherRequest)
-        .then((value) => widget.pageController.animateToPage(2,
-            duration: kDefaultDuration, curve: Curves.easeInOut));
+        .then((value) => {
+              setState(() {
+                _isLoading = false;
+              }),
+              showTopSnackBar(
+                context,
+                CustomSnackBar.success(
+                  backgroundColor: Color(0xff001242),
+                  message:
+                      "Your application  has being recieved. We'll get back to you.",
+                ),
+              )
+            });
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    Map initData = Provider.of<BurialProvider>(context).getFormDataC();
+    setState(() {
+      initformData = initData;
+    });
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
       child: Column(
         children: [
           Center(
@@ -760,8 +838,9 @@ class _FinalFormState extends State<FinalForm> {
           Padding(
             padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
-              initialValue: firstApplicant,
+              initialValue: initformData['firstApplicant'],
               decoration: InputDecoration(hintText: 'Name of applicant(1)'),
+              onSaved: (newValue) => firstApplicant = newValue!,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
@@ -773,9 +852,10 @@ class _FinalFormState extends State<FinalForm> {
           Padding(
             padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
-              initialValue: firstApplicantRelationship,
+              initialValue: initformData['firstApplicantRelationship'],
               decoration: InputDecoration(
                   hintText: 'Relationship of applicant to deceased (1)'),
+              onSaved: (newValue) => firstApplicantRelationship = newValue!,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
@@ -787,8 +867,9 @@ class _FinalFormState extends State<FinalForm> {
           Padding(
             padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
-              initialValue: secondApplicant,
+              initialValue: initformData['secondApplicant'],
               decoration: InputDecoration(hintText: 'Name of applicant(2)'),
+              onSaved: (newValue) => secondApplicant = newValue!,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
@@ -800,9 +881,10 @@ class _FinalFormState extends State<FinalForm> {
           Padding(
             padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
-              initialValue: firstApplicantRelationship,
+              initialValue: initformData['secondApplicantRelationship'],
               decoration: InputDecoration(
                   hintText: 'Relationship of applicant to deceased (2)'),
+              onSaved: (newValue) => secondApplicantRelationship = newValue!,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
@@ -814,10 +896,11 @@ class _FinalFormState extends State<FinalForm> {
           Padding(
             padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
-              initialValue: language,
+              initialValue: initformData['language'],
               decoration: InputDecoration(
                   hintText:
                       'What language do you want the service/wake keep to be concluded ?'),
+              onSaved: (newValue) => language = newValue!,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
@@ -829,10 +912,11 @@ class _FinalFormState extends State<FinalForm> {
           Padding(
             padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
-              initialValue: donate,
+              initialValue: initformData['donate'],
               decoration: InputDecoration(
                   hintText:
                       'What do you want to donate for the church in memorial of the deceased ?'),
+              onSaved: (newValue) => donate = newValue!,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
@@ -844,9 +928,10 @@ class _FinalFormState extends State<FinalForm> {
           Padding(
             padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
-              initialValue: burialLocation,
+              initialValue: initformData['burialLocation'],
               decoration: InputDecoration(
                   hintText: 'Where will the deceased be buried ?'),
+              onSaved: (newValue) => burialLocation = newValue!,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
@@ -858,10 +943,11 @@ class _FinalFormState extends State<FinalForm> {
           Padding(
             padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
-              initialValue: otherRequest,
+              initialValue: initformData['otherRequest'],
               decoration: InputDecoration(
                   hintText:
                       'Do you have any other request that you want the priest to consider (e.g Deceased favorite song in pamphlet, guest choir) etc.'),
+              onSaved: (newValue) => otherRequest = newValue!,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'This field is required';
@@ -879,8 +965,22 @@ class _FinalFormState extends State<FinalForm> {
               runSpacing: defaultPadding,
               children: [
                 MaterialButton(
-                  onPressed: () => widget.pageController.animateToPage(1,
-                      duration: kDefaultDuration, curve: Curves.easeInOut),
+                  onPressed: () {
+                    _formKey.currentState!.save();
+                    Provider.of<BurialProvider>(context, listen: false)
+                        .setFinalForm(
+                            firstApplicant,
+                            secondApplicant,
+                            firstApplicantRelationship,
+                            secondApplicantRelationship,
+                            language,
+                            donate,
+                            burialLocation,
+                            otherRequest)
+                        .then((value) => widget.pageController.animateToPage(1,
+                            duration: kDefaultDuration,
+                            curve: Curves.easeInOut));
+                  },
                   color: Color(0xff1d3557),
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
@@ -893,17 +993,22 @@ class _FinalFormState extends State<FinalForm> {
                 SizedBox(
                   width: defaultPadding,
                 ),
-                MaterialButton(
-                  onPressed: () => _submitForm(),
-                  color: Color(0xff1d3557),
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'Submit',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
+                _isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                        color: Color(0xff1d3557),
+                      ))
+                    : MaterialButton(
+                        onPressed: () => _submitForm(),
+                        color: Color(0xff1d3557),
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'Submit',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),

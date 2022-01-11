@@ -10,19 +10,31 @@ class SideMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: primaryColor,
+        color: Color(0xff001242),
         child: Obx(
           () => ListView(
             children: [
               DrawerHeader(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: defaultPadding),
-                  child: Image.asset(
-                    'assets/logos/logo1.png',
-                    height: 35,
-                    width: 50,
-                    fit: BoxFit.scaleDown,
-                    color: Colors.white,
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/icons/cathedral.png',
+                        height: 32,
+                        fit: BoxFit.scaleDown,
+                        color: Colors.white,
+                      ),
+                      Text(
+                        'St Paul\'s Anglican Church',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: defaultPadding + 8,
+                            fontWeight: FontWeight.bold),
+                      )
+                    ],
                   ),
                 ),
               ),

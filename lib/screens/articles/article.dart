@@ -25,7 +25,7 @@ class ArticlePage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              NavigationBar(
+              NavBar(
                 color: Colors.black,
                 controller: _controller,
               ),
