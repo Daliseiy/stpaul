@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
           //'publications': (ctx) => Publications(),
           //'sermon': (ctx) => SermonScreen(),
           'about': (ctx) => AboutPage(),
-          'projects': (ctx) => ProjectPage()
+          'give': (ctx) => ProjectPage()
         },
       ),
     );
