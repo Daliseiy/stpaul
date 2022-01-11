@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:stpaulanglicanchurh/components/navbar/footer.dart';
 import 'package:stpaulanglicanchurh/components/navbar/navigation_bar.dart';
 import 'package:stpaulanglicanchurh/components/navbar/side_menu.dart';
 import 'package:stpaulanglicanchurh/constant.dart';
 import 'package:stpaulanglicanchurh/controllers/controller.dart';
 import 'package:stpaulanglicanchurh/responsive.dart';
+import 'package:stpaulanglicanchurh/screens/about/about.dart';
+import 'package:stpaulanglicanchurh/screens/form/burial.dart';
 import 'package:stpaulanglicanchurh/screens/home/components/activity.dart';
 import 'package:stpaulanglicanchurh/screens/home/components/belief.dart';
 import 'package:stpaulanglicanchurh/screens/home/components/contact.dart';
@@ -83,8 +86,10 @@ class HomePage extends StatelessWidget {
                       ),
                       MaterialButton(
                         shape: RoundedRectangleBorder(
-                            side: BorderSide(color: Colors.white)),
-                        onPressed: () {},
+                          side: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        onPressed: () => Navigator.pushNamed(context, 'about'),
                         child: Padding(
                           padding: EdgeInsets.all(defaultPadding),
                           child: Text(
@@ -108,6 +113,7 @@ class HomePage extends StatelessWidget {
             ActivitySection(),
             EventSection(),
             TestimonySection(),
+            BurialSection(),
             PastorWelcomeSection(),
             ContactSection(),
             Footer(),
@@ -202,5 +208,85 @@ class PastorWelcomeSection extends StatelessWidget {
                   ),
                 ],
               ));
+  }
+}
+
+class BurialSection extends StatelessWidget {
+  const BurialSection({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.all(defaultPadding),
+      constraints: BoxConstraints(maxWidth: 1000),
+      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 60),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Color(0xffc5c8c9), width: 0.5)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          FittedBox(
+            child: Text(
+              '2 Corinthians 5:8',
+              style: GoogleFonts.montserrat(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xffc5c8c9),
+                  fontSize: 12,
+                  letterSpacing: 1.5),
+            ),
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          Text(
+            'A Proper\nHomecoming',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 30,
+              color: Colors.black,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(
+            height: 16,
+          ),
+          Text(
+            'Get a proper burial or wake keep service for your late \nloved one\'s through this ministry.',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.openSans(
+              color: Color(0xffc5c8c9),
+              fontSize: Responsive.isMobile(context) ? 12 : 12,
+            ),
+          ),
+          SizedBox(
+            height: 64,
+          ),
+          FittedBox(
+            child: MaterialButton(
+              onPressed: () => Navigator.push(
+                  context, MaterialPageRoute(builder: (ctx) => BurialForm())),
+              shape: RoundedRectangleBorder(
+                side: BorderSide(color: Color(0xff001242)),
+                borderRadius: BorderRadius.circular(25),
+              ),
+              hoverColor: Colors.blue.shade900.withOpacity(0.3),
+              hoverElevation: 8,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: Text('APPLY',
+                    textAlign: TextAlign.end,
+                    style: GoogleFonts.montserrat(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

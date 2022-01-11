@@ -217,6 +217,10 @@ class _TestimonySectionState extends State<TestimonySection> {
               children: [TestimonyCard(), TestimonyCard()],
             ),
           if (Responsive.isDesktop(context))
+            SizedBox(
+              height: defaultPadding * 2,
+            ),
+          if (Responsive.isDesktop(context))
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [TestimonyCard(), TestimonyCard()],
@@ -265,8 +269,8 @@ class TestimonyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 350,
-      width: 350,
+      height: 400,
+      width: 400,
       margin: EdgeInsets.all(defaultPadding),
       padding: EdgeInsets.all(defaultPadding),
       decoration: BoxDecoration(
@@ -287,9 +291,11 @@ class TestimonyCard extends StatelessWidget {
             ),
           ),
           Text(
-            'this is a test',
+            'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et voluptatem doloribus recusandae quia ut molestiae numquam ab voluptas, nobis fugiat, in, ea aliquid! Incidunt dicta ducimus repudiandae architecto cumque dolor.',
             style: TextStyle(
-                color: kTextColor, fontSize: defaultPadding + 2, height: 1.5),
+              color: kTextColor,
+              fontSize: defaultPadding,
+            ),
           ),
           SizedBox(
             height: defaultPadding * 2,
