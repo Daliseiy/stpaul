@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:stpaulanglicanchurh/providers/data_provider.dart';
+import 'package:stpaulanglicanchurh/routes/pages.dart';
+import 'package:stpaulanglicanchurh/screens/dashboard/dashboard.dart';
+import 'package:stpaulanglicanchurh/screens/dashboard/screens/burials.dart';
+import 'package:stpaulanglicanchurh/screens/dashboard/screens/contacts.dart';
+import 'package:stpaulanglicanchurh/screens/dashboard/screens/event.dart';
+import 'package:stpaulanglicanchurh/screens/dashboard/screens/occasions.dart';
+import 'package:stpaulanglicanchurh/screens/dashboard/screens/testimony.dart';
 import 'firebase_options.dart';
 import 'package:stpaulanglicanchurh/providers/burial_provider.dart';
 import 'package:stpaulanglicanchurh/screens/about/about.dart';
@@ -50,12 +58,18 @@ class MyApp extends StatelessWidget {
             )),
         debugShowCheckedModeBanner: false,
         initialRoute: 'home',
+        //getPages: AppPages.routes,
         routes: {
-          'home': (ctx) => HomePage(),
+          'home': (ctx) => DashBoard(),
           //'publications': (ctx) => Publications(),
           //'sermon': (ctx) => SermonScreen(),
           'about': (ctx) => AboutPage(),
-          'give': (ctx) => ProjectPage()
+          'give': (ctx) => ProjectPage(),
+          'testimony-admin': (ctx) => TestimonyScreen(),
+          'event-admin': (ctx) => EventScreen(),
+          'contact-admin': (ctx) => ContactScreen(),
+          'burial-admin': (ctx) => BurialsScreen(),
+          'occassion-admin': (ctx) => OccasionScreen(),
         },
       ),
     );

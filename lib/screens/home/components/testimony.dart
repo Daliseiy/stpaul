@@ -96,8 +96,16 @@ class _TestimonySectionState extends State<TestimonySection> {
                           onSaved: (newValue) => phoneNumber = newValue,
                           keyboardType: TextInputType.phone,
                           validator: (value) {
-                            if (value!.isEmpty) {
+                            bool isInt = int.tryParse(value as String) == null;
+
+                            if (value.isEmpty) {
                               return 'This field is required';
+                            }
+                            if (value.length < 11 || value.length > 12) {
+                              return 'This number is not valid';
+                            }
+                            if (isInt) {
+                              return 'Enter a valid phone number';
                             }
                           },
                         ),
@@ -145,7 +153,6 @@ class _TestimonySectionState extends State<TestimonySection> {
                                   } else {
                                     setState(() {
                                       _isLoading = true;
-                                      print('the state has been changed');
                                     });
                                   }
                                   _formKey.currentState!.save();

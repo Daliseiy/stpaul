@@ -201,7 +201,7 @@ class _ContactFormState extends State<ContactForm> {
                   child: TextFormField(
                 style: TextStyle(fontWeight: FontWeight.w400),
                 decoration: InputDecoration(
-                  labelText: 'Name',
+                  labelText: 'Full mame',
                   labelStyle: GoogleFonts.montserrat(
                       color: Colors.black.withOpacity(0.6),
                       letterSpacing: 1.5,
@@ -237,7 +237,7 @@ class _ContactFormState extends State<ContactForm> {
                 style: TextStyle(fontWeight: FontWeight.w400),
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Phone',
+                  labelText: 'Phone number',
                   labelStyle: GoogleFonts.montserrat(
                       color: Colors.black.withOpacity(0.6),
                       letterSpacing: 1.5,

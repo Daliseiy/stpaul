@@ -38,16 +38,31 @@ class SideMenu extends StatelessWidget {
                   ),
                 ),
               ),
-              ...List.generate(
-                _controller.menuItems.length,
-                (index) => DrawerItem(
-                  isActive: index == _controller.selectedIndex,
-                  title: _controller.menuItems[index],
-                  press: () {
-                    _controller.setMenuIndex(index);
-                    Navigator.popAndPushNamed(
-                        context, _controller.route[index]);
-                  },
+              ListTile(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: defaultPadding),
+                onTap: () => Navigator.pushNamed(context, 'name'),
+                title: Text(
+                  'Home',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              ListTile(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: defaultPadding),
+                onTap: () => navigate(0),
+                title: Text(
+                  'About',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              ListTile(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: defaultPadding),
+                onTap: () => navigate(1),
+                title: Text(
+                  'Give',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],
@@ -55,6 +70,14 @@ class SideMenu extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  navigate(int index) {
+    if (index == 0) {
+      Get.toNamed('about');
+    } else if (index == 1) {
+      Get.toNamed('give');
+    }
   }
 }
 

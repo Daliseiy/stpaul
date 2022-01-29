@@ -6,6 +6,7 @@ import 'package:stpaulanglicanchurh/components/navbar/navigation_bar.dart';
 import 'package:stpaulanglicanchurh/components/navbar/side_menu.dart';
 import 'package:stpaulanglicanchurh/constant.dart';
 import 'package:stpaulanglicanchurh/controllers/controller.dart';
+import 'package:stpaulanglicanchurh/controllers/home_controller.dart';
 import 'package:stpaulanglicanchurh/responsive.dart';
 import 'package:stpaulanglicanchurh/screens/form/burial.dart';
 import 'package:stpaulanglicanchurh/screens/home/components/activity.dart';
@@ -15,7 +16,7 @@ import 'package:stpaulanglicanchurh/screens/home/components/contact.dart';
 import 'components/event.dart';
 import 'components/testimony.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends GetView<HomeController> {
   HomePage({Key? key}) : super(key: key);
 
   MenuController _controller = Get.put(
@@ -25,9 +26,9 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _controller.scaffoldkey,
+      //key: _controller.scaffoldkey,
       drawer: !Responsive.isDesktop(context) ? SideMenu() : Drawer(),
-      drawerEnableOpenDragGesture: false,
+      //drawerEnableOpenDragGesture: false,
       body: SafeArea(
           child: SingleChildScrollView(
         child: Column(

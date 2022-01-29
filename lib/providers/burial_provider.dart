@@ -2,8 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:stpaulanglicanchurh/models/burial.dart';
 
 class BurialProvider with ChangeNotifier {
+  List<Burial> _burialData = [];
+
+  List<Burial> get burialData {
+    return [..._burialData];
+  }
+
   static String? nameOfDeceased;
   static String? age;
   static String? homeAddress;
@@ -212,5 +219,20 @@ class BurialProvider with ChangeNotifier {
       print(error);
       throw error;
     }
+  }
+
+  Future<void> fetchBurialForm() async {
+    List<Burial> burialObj = [];
+    var url = Uri.parse(
+        'https://stpaul-anglican-default-rtdb.firebaseio.com/burial.json');
+
+    var response = await http.get(url);
+
+    var burialData = BurialFromJson(response.body);
+    burialData.forEach((key, value) {
+      burialObj.add(value);
+    });
+    _burialData = burialObj;
+    notifyListeners();
   }
 }

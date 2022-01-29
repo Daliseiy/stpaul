@@ -45,3 +45,12 @@ String Function(Match) mathFunc = (Match match) => '${match[1]},';
 
 var formatter = NumberFormat('##,###,000');
 var dateFormat = DateFormat('yyyy-MM-dd');
+var stringdateFormat = DateFormat('MMM dd yyyy');
+
+String formatTimeOfDay(TimeOfDay tod) {
+  final now = DateTime.now();
+  final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
+  final format = DateFormat.jm();
+  return format.format(dt);
+}
+//var timeFormat = TimeOfDayFormat()
