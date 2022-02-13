@@ -13,14 +13,15 @@ class ActivitySection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(defaultPadding * 1.5),
       width: double.infinity,
-      decoration: BoxDecoration(
-          image: DecorationImage(
-        image: NetworkImage(
-            'https://res.cloudinary.com/daliseiy/image/upload/v1641914406/stpaul/event2_d3dpqk.jpg'),
-        fit: BoxFit.cover,
-        colorFilter:
-            ColorFilter.mode(Colors.black.withOpacity(0.7), BlendMode.darken),
-      )),
+      decoration: BoxDecoration(color: Colors.transparent
+          //image: DecorationImage(
+          //image: NetworkImage(
+          //  'https://res.cloudinary.com/daliseiy/image/upload/v1641914406/stpaul/event2_d3dpqk.jpg'),
+          //fit: BoxFit.cover,
+          //colorFilter:
+          //    ColorFilter.mode(Colors.black.withOpacity(0.7), BlendMode.darken),
+          //)
+          ),
       child: Column(
         children: [
           Text('Our Weekly Activities',

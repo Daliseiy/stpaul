@@ -75,10 +75,13 @@ class ContactSection extends StatelessWidget {
                   )),
                   Expanded(
                       child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50)),
                     margin: EdgeInsets.all(defaultPadding),
                     elevation: 4,
                     child: Padding(
-                      padding: EdgeInsets.all(defaultPadding),
+                      padding: EdgeInsets.symmetric(
+                          vertical: defaultPadding, horizontal: 20),
                       child: ContactForm(),
                     ),
                   ))
@@ -134,9 +137,12 @@ class ContactSection extends StatelessWidget {
                   ),
                   Card(
                     margin: EdgeInsets.all(defaultPadding),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50)),
                     elevation: 4,
                     child: Padding(
-                      padding: EdgeInsets.all(defaultPadding),
+                      padding: EdgeInsets.symmetric(
+                          vertical: defaultPadding, horizontal: 20),
                       child: ContactForm(),
                     ),
                   ),
@@ -194,6 +200,9 @@ class _ContactFormState extends State<ContactForm> {
       key: _formKey,
       child: Column(
         children: [
+          SizedBox(
+            height: 15,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -201,7 +210,7 @@ class _ContactFormState extends State<ContactForm> {
                   child: TextFormField(
                 style: TextStyle(fontWeight: FontWeight.w400),
                 decoration: InputDecoration(
-                  labelText: 'Full mame',
+                  labelText: 'Full name',
                   labelStyle: GoogleFonts.montserrat(
                       color: Colors.black.withOpacity(0.6),
                       letterSpacing: 1.5,
@@ -228,7 +237,7 @@ class _ContactFormState extends State<ContactForm> {
               ))
             ],
           ),
-          SizedBox(height: defaultPadding + 4),
+          SizedBox(height: defaultPadding + 6),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -272,7 +281,7 @@ class _ContactFormState extends State<ContactForm> {
               ))
             ],
           ),
-          SizedBox(height: defaultPadding + 4),
+          SizedBox(height: defaultPadding + 6),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -310,7 +319,7 @@ class _ContactFormState extends State<ContactForm> {
               ))
             ],
           ),
-          SizedBox(height: defaultPadding + 4),
+          SizedBox(height: defaultPadding + 6),
           Row(
             children: [
               Expanded(
@@ -325,11 +334,13 @@ class _ContactFormState extends State<ContactForm> {
                       fontSize: 12,
                       fontWeight: FontWeight.bold),
                   focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
                     borderSide: BorderSide(
                       color: Color(0xff001242),
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
                     borderSide:
                         BorderSide(color: Color(0xff001242), width: 0.7),
                   ),

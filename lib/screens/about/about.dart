@@ -9,11 +9,22 @@ import 'package:stpaulanglicanchurh/screens/home/components/contact.dart';
 
 import '../../responsive.dart';
 
-class AboutPage extends StatelessWidget {
+class AboutPage extends StatefulWidget {
   AboutPage({Key? key}) : super(key: key);
-  MenuController _controller = Get.put(
-    MenuController(),
-  );
+
+  @override
+  State<AboutPage> createState() => _AboutPageState();
+}
+
+class _AboutPageState extends State<AboutPage> {
+  static GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _scaffoldKey.currentState!.dispose();
+    super.dispose();
+  }
 
   var text =
       'St. Pual\'s Anglican Church  Odo-Ona Ibadan started as a small fellowship in the small sitting room of Pa Samuel Adepoju in the Junior Staff quarters of Agricultural Department in Moor Plantation in 1911. The founding fathers and mothers faced persecution by a zealous expatriate who destroyed their thatched roof shed built for worship. This forced these faithful ones to relocate to  Ayede quarters, it was named Ayede quarters because the inabitants of that area were farmers mainly from Ayede Ekiti, more members were added to the number and this became a parish Church. \nIn 1917, a permanent site was acquired through the efforts of Pa Olugbode, Pa Tajo and the then Archdeacon of Ibadan the Venerable Archdeacon S.V Latunde who later christened it St. Paul\'s Church under the patronal name of Saint Paul the great Apostle. \nIt can be concluded that St, Paul\'s Anglican Church Odo Ona the seat of Odo Ona Archdeacony has given birth to other three Archdeaconries in the Diocese, these are Irepo Archdeaconry, Ibarapa Archdeaconry and Oluyole Extension Archdeaconry. At the moment the remaining parishes under Odo Ona Archdeaconry are St. Paul\'s Odo Ona, St James Idi-Oro Elewa, St James Isoko/Urhobo, St John\'s Church Ido, St.Jude\'s Gbekuba and Canon Babatunde Memorial Olorunlogbon Quarters.';
@@ -21,8 +32,8 @@ class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _controller.scaffoldkey,
-      drawer: !Responsive.isDesktop(context) ? SideMenu() : Drawer(),
+      key: _scaffoldKey,
+      drawer: !Responsive.isDesktop(context) ? SideMenu() : null,
       drawerEnableOpenDragGesture: false,
       body: SingleChildScrollView(
         child: Column(
@@ -31,9 +42,30 @@ class AboutPage extends StatelessWidget {
               color: Color(0xff001242),
               child: Column(
                 children: [
-                  NavBar(
-                    color: Colors.white,
-                    controller: _controller,
+                  Row(
+                    children: [
+                      if (!Responsive.isDesktop(context))
+                        IconButton(
+                          onPressed: () {
+                            if (_scaffoldKey.currentState!.isDrawerOpen) {
+                              _scaffoldKey.currentState!.openEndDrawer();
+                            } else {
+                              _scaffoldKey.currentState!.openDrawer();
+                            }
+                          },
+                          icon: Icon(Icons.menu),
+                          color: Colors.white,
+                          iconSize: 32,
+                        ),
+                      SizedBox(
+                        width: defaultPadding,
+                      ),
+                      Expanded(
+                        child: NavBar(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: defaultPadding * 3),
                   Text(

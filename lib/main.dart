@@ -12,6 +12,7 @@ import 'package:stpaulanglicanchurh/screens/dashboard/screens/contacts.dart';
 import 'package:stpaulanglicanchurh/screens/dashboard/screens/event.dart';
 import 'package:stpaulanglicanchurh/screens/dashboard/screens/occasions.dart';
 import 'package:stpaulanglicanchurh/screens/dashboard/screens/testimony.dart';
+import 'package:stpaulanglicanchurh/screens/form/occasion.dart';
 import 'firebase_options.dart';
 import 'package:stpaulanglicanchurh/providers/burial_provider.dart';
 import 'package:stpaulanglicanchurh/screens/about/about.dart';
@@ -45,7 +46,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'St Paul Anglican Church',
         theme: ThemeData(
-            textTheme: GoogleFonts.andikaTextTheme(),
+            textTheme: GoogleFonts.nunitoSansTextTheme(),
             primarySwatch: Colors.blue,
             textButtonTheme: TextButtonThemeData(
               style: ButtonStyle(
@@ -60,9 +61,10 @@ class MyApp extends StatelessWidget {
         initialRoute: 'home',
         //getPages: AppPages.routes,
         routes: {
-          'home': (ctx) => DashBoard(),
+          'home': (ctx) => HomePage(),
           //'publications': (ctx) => Publications(),
-          //'sermon': (ctx) => SermonScreen(),
+          'dashboard': (ctx) => DashBoard(),
+          'occassion': (ctx) => OccasionForm(),
           'about': (ctx) => AboutPage(),
           'give': (ctx) => ProjectPage(),
           'testimony-admin': (ctx) => TestimonyScreen(),

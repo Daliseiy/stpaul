@@ -9,39 +9,82 @@ import 'package:stpaulanglicanchurh/models/article.dart';
 
 import '../../responsive.dart';
 
-class ArticlePage extends StatelessWidget {
+class ArticlePage extends StatefulWidget {
   ArticlePage({Key? key}) : super(key: key);
 
-  MenuController _controller = Get.put(
-    MenuController(),
-  );
+  @override
+  State<ArticlePage> createState() => _ArticlePageState();
+}
+
+class _ArticlePageState extends State<ArticlePage> {
+  static GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _scaffoldKey.currentState!.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       drawer: !Responsive.isDesktop(context) ? SideMenu() : Drawer(),
       drawerEnableOpenDragGesture: false,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              NavBar(
-                color: Colors.black,
-                controller: _controller,
-              ),
-              Padding(
-                padding: EdgeInsets.all(defaultPadding),
-                child: Text('The 39 Articles of Faith',
-                    textAlign: TextAlign.center,
-                    style: Responsive.isDesktop(context)
-                        ? Theme.of(context)
-                            .textTheme
-                            .headline3!
-                            .copyWith(color: Colors.black)
-                        : Theme.of(context)
-                            .textTheme
-                            .headline4!
-                            .copyWith(color: Colors.black)),
+              Container(
+                color: Color(0xff001242),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        if (!Responsive.isDesktop(context))
+                          IconButton(
+                            onPressed: () {
+                              if (_scaffoldKey.currentState!.isDrawerOpen) {
+                                _scaffoldKey.currentState!.openEndDrawer();
+                              } else {
+                                _scaffoldKey.currentState!.openDrawer();
+                              }
+                            },
+                            icon: Icon(Icons.menu),
+                            color: Colors.white,
+                            iconSize: 32,
+                          ),
+                        SizedBox(
+                          width: defaultPadding,
+                        ),
+                        Expanded(
+                          child: NavBar(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: defaultPadding * 3),
+                    Padding(
+                      padding: EdgeInsets.all(defaultPadding),
+                      child: Text('The 39 Articles of Faith',
+                          textAlign: TextAlign.center,
+                          style: Responsive.isDesktop(context)
+                              ? Theme.of(context)
+                                  .textTheme
+                                  .headline3!
+                                  .copyWith(color: Colors.white)
+                              : Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(color: Colors.white)),
+                    ),
+                    SizedBox(
+                      height: defaultPadding * 3,
+                    )
+                  ],
+                ),
               ),
               Container(
                 margin: EdgeInsets.all(defaultPadding),

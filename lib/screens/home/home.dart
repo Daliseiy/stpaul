@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,6 +10,7 @@ import 'package:stpaulanglicanchurh/constant.dart';
 import 'package:stpaulanglicanchurh/controllers/controller.dart';
 import 'package:stpaulanglicanchurh/controllers/home_controller.dart';
 import 'package:stpaulanglicanchurh/responsive.dart';
+import 'package:stpaulanglicanchurh/screens/articles/article.dart';
 import 'package:stpaulanglicanchurh/screens/form/burial.dart';
 import 'package:stpaulanglicanchurh/screens/home/components/activity.dart';
 import 'package:stpaulanglicanchurh/screens/home/components/belief.dart';
@@ -16,19 +19,29 @@ import 'package:stpaulanglicanchurh/screens/home/components/contact.dart';
 import 'components/event.dart';
 import 'components/testimony.dart';
 
-class HomePage extends GetView<HomeController> {
+class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
 
-  MenuController _controller = Get.put(
-    MenuController(),
-  );
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  static GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _scaffoldKey.currentState!.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //key: _controller.scaffoldkey,
-      drawer: !Responsive.isDesktop(context) ? SideMenu() : Drawer(),
-      //drawerEnableOpenDragGesture: false,
+      drawer: !Responsive.isDesktop(context) ? SideMenu() : null,
+      drawerEnableOpenDragGesture: false,
+      key: _scaffoldKey,
       body: SafeArea(
           child: SingleChildScrollView(
         child: Column(
@@ -53,9 +66,30 @@ class HomePage extends GetView<HomeController> {
                 children: [
                   Column(
                     children: [
-                      NavBar(
-                        color: Colors.white,
-                        controller: _controller,
+                      Row(
+                        children: [
+                          if (!Responsive.isDesktop(context))
+                            IconButton(
+                              onPressed: () {
+                                if (_scaffoldKey.currentState!.isDrawerOpen) {
+                                  _scaffoldKey.currentState!.openEndDrawer();
+                                } else {
+                                  _scaffoldKey.currentState!.openDrawer();
+                                }
+                              },
+                              icon: Icon(Icons.menu),
+                              color: Colors.white,
+                              iconSize: 32,
+                            ),
+                          SizedBox(
+                            width: defaultPadding,
+                          ),
+                          Expanded(
+                            child: NavBar(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         height: defaultPadding * 3.5,
@@ -77,10 +111,14 @@ class HomePage extends GetView<HomeController> {
                         height: defaultPadding * 3,
                       ),
                       Text(
-                        'The pupose of our church community is to worship the Glory of God. We live to be called to speak, think and work by remembering the gospel. Join us in preaching praying and teaching His Word! where they are.',
+                        'The pupose of our church community is to worship the Glory of God. We live to be called to speak, think and work by remembering the gospel. Join us in preaching praying and teaching his word!!.',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline6!.copyWith(
-                            color: Colors.white, fontWeight: FontWeight.w300),
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
+                            fontSize: Responsive.isDesktop(context)
+                                ? defaultPadding * 1.5
+                                : defaultPadding * 1.5),
                       ),
                       SizedBox(
                         height: defaultPadding * 3,
@@ -104,14 +142,15 @@ class HomePage extends GetView<HomeController> {
                       ),
                       SizedBox(
                         height: defaultPadding * 2,
-                      )
+                      ),
+                      ActivitySection(),
                     ],
                   ),
                 ],
               ),
             ),
-            BeliefSection(),
-            ActivitySection(),
+            //BeliefSection(),
+            NewBeliefSection(),
             EventSection(),
             TestimonySection(),
             BurialSection(),
@@ -122,6 +161,186 @@ class HomePage extends GetView<HomeController> {
         ),
       )),
     );
+  }
+}
+
+class NewBeliefSection extends StatelessWidget {
+  NewBeliefSection({
+    Key? key,
+  }) : super(key: key);
+  List children = <Widget>[];
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(defaultPadding),
+        margin: EdgeInsets.all(defaultPadding),
+        constraints: BoxConstraints(maxWidth: 1000),
+        child: Responsive.isDesktop(context)
+            ? Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Our\nBeliefs.',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 6.5 * defaultPadding),
+                    ),
+                  ),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        Transform.rotate(
+                          angle: -math.pi / 25,
+                          child: Container(
+                            height: 500,
+                            width: 500,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(55),
+                              color: Color(0xff001242),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(defaultPadding * 1.5),
+                          height: 500,
+                          width: 500,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.black,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'The 39 Articles of Faith',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(color: Colors.white),
+                              ),
+                              Text(
+                                'The 39 Articles are a brief and condensed statement of what Anglican Christians believe and teach.',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5!
+                                    .copyWith(color: Colors.white),
+                              ),
+                              InkWell(
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ArticlePage(),
+                                  ),
+                                ),
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: defaultPadding),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: defaultPadding / 2),
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          bottom: BorderSide(
+                                              color: Colors.white, width: 3))),
+                                  child: Text(
+                                    'View here',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: defaultPadding),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              )
+            : Column(
+                children: [
+                  Text(
+                    'Our\nBeliefs.',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 4.5 * defaultPadding),
+                  ),
+                  SizedBox(
+                    height: defaultPadding * 2,
+                  ),
+                  Stack(
+                    children: [
+                      Transform.rotate(
+                        angle: -math.pi / 25,
+                        child: Container(
+                          height: 500,
+                          width: 500,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(55),
+                            color: Color(0xff001242),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(defaultPadding * 1.5),
+                        height: 500,
+                        width: 500,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: Colors.black,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'The 39 Articles of Faith',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline3!
+                                  .copyWith(color: Colors.white),
+                            ),
+                            Text(
+                              'The 39 Articles are a brief and condensed statement of what Anglican Christians believe and teach.',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5!
+                                  .copyWith(color: Colors.white),
+                            ),
+                            InkWell(
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ArticlePage(),
+                                ),
+                              ),
+                              child: Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: defaultPadding),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: defaultPadding / 2),
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            color: Colors.white, width: 3))),
+                                child: Text(
+                                  'View here',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: defaultPadding),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ));
   }
 }
 

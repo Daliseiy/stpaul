@@ -7,10 +7,11 @@ import 'web_menu.dart';
 
 class NavBar extends StatelessWidget {
   final Color color;
-  final MenuController controller;
 
-  NavBar({Key? key, required this.color, required this.controller})
-      : super(key: key);
+  NavBar({
+    Key? key,
+    required this.color,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,18 +21,6 @@ class NavBar extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: defaultPadding),
       child: Row(
         children: [
-          if (!Responsive.isDesktop(context))
-            IconButton(
-              onPressed: () {
-                controller.openOrCloseDrawer();
-              },
-              icon: Icon(Icons.menu),
-              color: Colors.white,
-              iconSize: 32,
-            ),
-          SizedBox(
-            width: defaultPadding,
-          ),
           InkWell(
             onTap: () => Navigator.pushNamed(context, 'home'),
             child: Row(

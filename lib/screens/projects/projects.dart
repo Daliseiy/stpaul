@@ -10,16 +10,27 @@ import 'package:stpaulanglicanchurh/controllers/controller.dart';
 
 import '../../responsive.dart';
 
-class ProjectPage extends StatelessWidget {
+class ProjectPage extends StatefulWidget {
   ProjectPage({Key? key}) : super(key: key);
-  MenuController _controller = Get.put(
-    MenuController(),
-  );
+
+  @override
+  State<ProjectPage> createState() => _ProjectPageState();
+}
+
+class _ProjectPageState extends State<ProjectPage> {
+  static GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _scaffoldKey.currentState!.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _controller.scaffoldkey,
+      key: _scaffoldKey,
       drawer: !Responsive.isDesktop(context) ? SideMenu() : Drawer(),
       drawerEnableOpenDragGesture: false,
       body: SingleChildScrollView(
@@ -29,9 +40,30 @@ class ProjectPage extends StatelessWidget {
               color: Color(0xff001242),
               child: Column(
                 children: [
-                  NavBar(
-                    color: Colors.white,
-                    controller: _controller,
+                  Row(
+                    children: [
+                      if (!Responsive.isDesktop(context))
+                        IconButton(
+                          onPressed: () {
+                            if (_scaffoldKey.currentState!.isDrawerOpen) {
+                              _scaffoldKey.currentState!.openEndDrawer();
+                            } else {
+                              _scaffoldKey.currentState!.openDrawer();
+                            }
+                          },
+                          icon: Icon(Icons.menu),
+                          color: Colors.white,
+                          iconSize: 32,
+                        ),
+                      SizedBox(
+                        width: defaultPadding,
+                      ),
+                      Expanded(
+                        child: NavBar(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: defaultPadding * 2,

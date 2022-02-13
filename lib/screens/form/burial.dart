@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:stpaulanglicanchurh/components/navbar/navigation_bar.dart';
+import 'package:stpaulanglicanchurh/components/navbar/side_menu.dart';
 import 'package:stpaulanglicanchurh/constant.dart';
 import 'package:stpaulanglicanchurh/controllers/controller.dart';
 import 'package:stpaulanglicanchurh/providers/burial_provider.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+
+import '../../responsive.dart';
 
 class BurialForm extends StatefulWidget {
   BurialForm({Key? key}) : super(key: key);
@@ -17,12 +20,14 @@ class BurialForm extends StatefulWidget {
 
 class _BurialFormState extends State<BurialForm> {
   final PageController _pageController = PageController();
-  MenuController _controller = Get.put(
-    MenuController(),
-  );
+
+  static GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void dispose() {
     // TODO: implement dispose
+    _scaffoldKey.currentState!.dispose();
+
     _pageController.dispose();
     super.dispose();
   }
@@ -30,12 +35,39 @@ class _BurialFormState extends State<BurialForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: !Responsive.isDesktop(context) ? SideMenu() : null,
+      drawerEnableOpenDragGesture: false,
+      key: _scaffoldKey,
       backgroundColor: Color(0xff001242),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              NavBar(color: Colors.white, controller: _controller),
+              Row(
+                children: [
+                  if (!Responsive.isDesktop(context))
+                    IconButton(
+                      onPressed: () {
+                        if (_scaffoldKey.currentState!.isDrawerOpen) {
+                          _scaffoldKey.currentState!.openEndDrawer();
+                        } else {
+                          _scaffoldKey.currentState!.openDrawer();
+                        }
+                      },
+                      icon: Icon(Icons.menu),
+                      color: Colors.white,
+                      iconSize: 32,
+                    ),
+                  SizedBox(
+                    width: defaultPadding,
+                  ),
+                  Expanded(
+                    child: NavBar(
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
               SizedBox(
                 height: defaultPadding * 2,
               ),

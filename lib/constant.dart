@@ -53,4 +53,3 @@ String formatTimeOfDay(TimeOfDay tod) {
   final format = DateFormat.jm();
   return format.format(dt);
 }
-//var timeFormat = TimeOfDayFormat()

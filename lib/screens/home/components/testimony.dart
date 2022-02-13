@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:stpaulanglicanchurh/models/dataclass.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -218,39 +219,104 @@ class _TestimonySectionState extends State<TestimonySection> {
           SizedBox(
             height: defaultPadding * 3,
           ),
-          if (Responsive.isDesktop(context))
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [TestimonyCard(), TestimonyCard()],
-            ),
-          if (Responsive.isDesktop(context))
-            SizedBox(
-              height: defaultPadding * 2,
-            ),
-          if (Responsive.isDesktop(context))
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [TestimonyCard(), TestimonyCard()],
-            ),
-          if (!Responsive.isDesktop(context))
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TestimonyCard(),
-                SizedBox(
-                  height: defaultPadding * 2,
+          FutureBuilder<List<Testimony>>(
+            future: DataProvider()
+                .fetchTestimonies(), // a previously-obtained Future<String> or null
+            builder: (BuildContext context,
+                AsyncSnapshot<List<Testimony>> snapshot) {
+              List<Widget> children;
+              if (snapshot.hasData) {
+                List<Testimony>? data = snapshot.data;
+                children = <Widget>[
+                  if (Responsive.isDesktop(context))
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TestimonyCard(
+                          testimony: data![0],
+                        ),
+                        TestimonyCard(
+                          testimony: data[1],
+                        )
+                      ],
+                    ),
+                  if (Responsive.isDesktop(context))
+                    SizedBox(
+                      height: defaultPadding * 2,
+                    ),
+                  if (Responsive.isDesktop(context))
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TestimonyCard(
+                          testimony: data![2],
+                        ),
+                        TestimonyCard(
+                          testimony: data[3],
+                        )
+                      ],
+                    ),
+                  if (!Responsive.isDesktop(context))
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TestimonyCard(
+                          testimony: data![0],
+                        ),
+                        SizedBox(
+                          height: defaultPadding * 2,
+                        ),
+                        TestimonyCard(
+                          testimony: data[1],
+                        ),
+                        SizedBox(
+                          height: defaultPadding * 2,
+                        ),
+                        TestimonyCard(
+                          testimony: data[2],
+                        ),
+                        SizedBox(
+                          height: defaultPadding * 2,
+                        ),
+                        TestimonyCard(
+                          testimony: data[3],
+                        )
+                      ],
+                    ),
+                ];
+              } else if (snapshot.hasError) {
+                children = <Widget>[
+                  const Icon(
+                    Icons.error_outline,
+                    color: Colors.red,
+                    size: 60,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Text('Error: ${snapshot.error}'),
+                  )
+                ];
+              } else {
+                children = const <Widget>[
+                  SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: CircularProgressIndicator(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 16),
+                    child: Text('Awaiting result...'),
+                  )
+                ];
+              }
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: children,
                 ),
-                TestimonyCard(),
-                SizedBox(
-                  height: defaultPadding * 2,
-                ),
-                TestimonyCard(),
-                SizedBox(
-                  height: defaultPadding * 2,
-                ),
-                TestimonyCard()
-              ],
-            ),
+              );
+            },
+          ),
           MaterialButton(
             onPressed: () => showTestimonyDialog(),
             shape:
@@ -271,7 +337,8 @@ class _TestimonySectionState extends State<TestimonySection> {
 }
 
 class TestimonyCard extends StatelessWidget {
-  const TestimonyCard({Key? key}) : super(key: key);
+  final Testimony testimony;
+  TestimonyCard({Key? key, required this.testimony}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -285,34 +352,37 @@ class TestimonyCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(25),
           boxShadow: [kDefaultShadow]),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Transform.translate(
-            offset: Offset(Responsive.isDesktop(context) ? -130 : -110, -80),
-            child: Container(
-              height: Responsive.isDesktop(context) ? 120 : 120,
-              width: Responsive.isDesktop(context) ? 120 : 100,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  image: DecorationImage(
-                      image: AssetImage('assets/images/event1.jpg'))),
-            ),
-          ),
+          // Transform.translate(
+          //   offset: Offset(Responsive.isDesktop(context) ? -130 : -110, -80),
+          //   child: Container(
+          //     height: Responsive.isDesktop(context) ? 120 : 120,
+          //     width: Responsive.isDesktop(context) ? 120 : 100,
+          //     decoration: BoxDecoration(
+          //         borderRadius: BorderRadius.circular(120),
+          //         image: DecorationImage(
+          //             image: AssetImage('assets/images/Testimony1.jpg'))),
+          //   ),
+          // ),
           Text(
-            'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et voluptatem doloribus recusandae quia ut molestiae numquam ab voluptas, nobis fugiat, in, ea aliquid! Incidunt dicta ducimus repudiandae architecto cumque dolor.',
+            testimony.testimony,
             style: TextStyle(
               color: kTextColor,
               fontSize: defaultPadding,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          SizedBox(
-            height: defaultPadding * 2,
-          ),
+          Spacer(),
           Text(
-            'Randall Hyde',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            testimony.name,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           )
         ],
       ),
     );
   }
 }
+
+
+           // 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et voluptatem doloribus recusandae quia ut molestiae numquam ab voluptas, nobis fugiat, in, ea aliquid! Incidunt dicta ducimus repudiandae architecto cumque dolor.',
