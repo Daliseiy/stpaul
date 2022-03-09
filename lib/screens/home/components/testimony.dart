@@ -1,9 +1,13 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:stpaulanglicanchurh/models/dataclass.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:stpaulanglicanchurh/models/dataclass.dart';
+
 import 'package:stpaulanglicanchurh/providers/data_provider.dart';
 
 import '../../../constant.dart';
@@ -23,7 +27,11 @@ class _TestimonySectionState extends State<TestimonySection> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
-  Future showTestimonyDialog() {
+  final ImagePicker _picker = ImagePicker();
+  // Pick an image
+  XFile? pickedImage;
+
+  Future showTestimonyDialog() async {
     return showDialog(
         context: context,
         builder: (ctx) {
@@ -52,7 +60,51 @@ class _TestimonySectionState extends State<TestimonySection> {
                                   .copyWith(color: Color(0xff001242)),
                         ),
                         SizedBox(
-                          height: defaultPadding * 2,
+                          height: defaultPadding * 1.5,
+                        ),
+                        Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.grey)),
+                          child: pickedImage == null
+                              ? IconButton(
+                                  onPressed: () async {
+                                    final XFile? image = await _picker
+                                        .pickImage(source: ImageSource.gallery);
+                                    setState(() {
+                                      pickedImage = image;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    Icons.add_a_photo_rounded,
+                                    color: Colors.grey,
+                                  ))
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: Image.network(
+                                    pickedImage!.path,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                        ),
+                        SizedBox(
+                          height: defaultPadding,
+                        ),
+                        if (pickedImage != null)
+                          TextButton(
+                              onPressed: () async {
+                                final XFile? image = await _picker.pickImage(
+                                    source: ImageSource.gallery);
+                                setState(() {
+                                  pickedImage = image;
+                                });
+                              },
+                              child: Text('Change Image',
+                                  style: TextStyle(color: Color(0xff001242)))),
+                        SizedBox(
+                          height: defaultPadding * 1.5,
                         ),
                         TextFormField(
                           initialValue: fullName,
@@ -158,23 +210,93 @@ class _TestimonySectionState extends State<TestimonySection> {
                                   }
                                   _formKey.currentState!.save();
 
-                                  await Provider.of<DataProvider>(context,
-                                          listen: false)
-                                      .addTestimony(
-                                          fullName, phoneNumber, testimony)
-                                      .then((value) {
-                                    setState(() {
-                                      _isLoading = false;
-                                    });
-                                    showTopSnackBar(
-                                      context,
-                                      CustomSnackBar.success(
-                                        backgroundColor: Color(0xff001242),
+                                  if (pickedImage == null) {
+                                    await Provider.of<DataProvider>(context,
+                                            listen: false)
+                                        .addTestimony(
+                                            fullName,
+                                            phoneNumber,
+                                            testimony,
+                                            'https://res.cloudinary.com/daliseiy/image/upload/v1646820175/stpaul/Replace_Default_User_Account_Avatar_in_Windows_10_ckglyv.png')
+                                        .then((_) {
+                                      setState(() {
+                                        _isLoading = false;
+                                        fullName = '';
+                                        phoneNumber = '';
+                                        testimony = '';
+                                        pickedImage = null;
+                                      });
+                                      showTopSnackBar(
+                                        context,
+                                        CustomSnackBar.success(
+                                          backgroundColor: Color(0xff001242),
+                                          message:
+                                              "Your testimony has being recieved. Thank you.",
+                                        ),
+                                      );
+                                      Navigator.pop(context);
+                                    }).catchError((error) {
+                                      CustomSnackBar.error(
                                         message:
-                                            "Your testimony has being recieved. Thank you.",
-                                      ),
-                                    );
-                                  });
+                                            "Something went wrong. Please try again",
+                                      );
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                    });
+                                  } else {
+                                    Reference firebaseStorageRef =
+                                        FirebaseStorage.instance.ref().child(
+                                            "image" +
+                                                DateTime.now().toString());
+                                    UploadTask uploadTask =
+                                        firebaseStorageRef.putData(
+                                            await pickedImage!.readAsBytes());
+                                    TaskSnapshot taskSnapshot =
+                                        await uploadTask;
+                                    taskSnapshot.ref
+                                        .getDownloadURL()
+                                        .then((value) async {
+                                      await Provider.of<DataProvider>(context,
+                                              listen: false)
+                                          .addTestimony(fullName, phoneNumber,
+                                              testimony, value)
+                                          .then((value) {
+                                        setState(() {
+                                          _isLoading = false;
+                                          fullName = '';
+                                          phoneNumber = '';
+                                          testimony = '';
+                                          pickedImage = null;
+                                        });
+                                        showTopSnackBar(
+                                          context,
+                                          CustomSnackBar.success(
+                                            backgroundColor: Color(0xff001242),
+                                            message:
+                                                "Your testimony has being recieved. Thank you.",
+                                          ),
+                                        );
+                                        Navigator.pop(context);
+                                      }).catchError((error) {
+                                        CustomSnackBar.error(
+                                          message:
+                                              "Something went wrong. Please try again",
+                                        );
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                      });
+                                    }).catchError((error) {
+                                      CustomSnackBar.error(
+                                        message:
+                                            "Something went wrong. Please try again",
+                                      );
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                    });
+                                  }
                                 },
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(25)),
@@ -228,61 +350,20 @@ class _TestimonySectionState extends State<TestimonySection> {
               if (snapshot.hasData) {
                 List<Testimony>? data = snapshot.data;
                 children = <Widget>[
-                  if (Responsive.isDesktop(context))
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        TestimonyCard(
-                          testimony: data![0],
-                        ),
-                        TestimonyCard(
-                          testimony: data[1],
-                        )
-                      ],
-                    ),
-                  if (Responsive.isDesktop(context))
-                    SizedBox(
-                      height: defaultPadding * 2,
-                    ),
-                  if (Responsive.isDesktop(context))
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        TestimonyCard(
-                          testimony: data![2],
-                        ),
-                        TestimonyCard(
-                          testimony: data[3],
-                        )
-                      ],
-                    ),
-                  if (!Responsive.isDesktop(context))
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TestimonyCard(
-                          testimony: data![0],
-                        ),
-                        SizedBox(
-                          height: defaultPadding * 2,
-                        ),
-                        TestimonyCard(
-                          testimony: data[1],
-                        ),
-                        SizedBox(
-                          height: defaultPadding * 2,
-                        ),
-                        TestimonyCard(
-                          testimony: data[2],
-                        ),
-                        SizedBox(
-                          height: defaultPadding * 2,
-                        ),
-                        TestimonyCard(
-                          testimony: data[3],
-                        )
-                      ],
-                    ),
+                  Container(
+                    height: 1050,
+                    width: double.infinity,
+                    child: GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisSpacing: defaultPadding,
+                            mainAxisSpacing: defaultPadding,
+                            crossAxisCount:
+                                Responsive.isDesktop(context) ? 2 : 1),
+                        itemCount: 4,
+                        itemBuilder: (context, index) =>
+                            TestimonyCard(testimony: data![index])),
+                  ),
                 ];
               } else if (snapshot.hasError) {
                 children = <Widget>[
@@ -343,8 +424,8 @@ class TestimonyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400,
-      width: 400,
+      height: 350,
+      width: 350,
       margin: EdgeInsets.all(defaultPadding),
       padding: EdgeInsets.all(defaultPadding),
       decoration: BoxDecoration(

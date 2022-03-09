@@ -3,10 +3,11 @@ class Testimony {
   final String name;
   final String phoneNumber;
   final String testimony;
-  bool isVisible = true;
+  final String imagePath;
+  final bool isVisible;
 
-  Testimony(
-      this.id, this.name, this.phoneNumber, this.testimony, this.isVisible);
+  Testimony(this.id, this.name, this.phoneNumber, this.testimony,
+      this.isVisible, this.imagePath);
 }
 
 class Contact {

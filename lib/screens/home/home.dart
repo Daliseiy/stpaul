@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
-                      'https://res.cloudinary.com/daliseiy/image/upload/v1641914402/stpaul/header_mrvwsf.jpg'),
+                      'https://res.cloudinary.com/daliseiy/image/upload/v1646823836/stpaul/gettyimages-584533472-594x594_iosnes.jpg'),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
                       Colors.black.withOpacity(0.7), BlendMode.darken),

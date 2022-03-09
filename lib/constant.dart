@@ -16,7 +16,7 @@ const kTextColor = Color(0xFF757575);
 
 final kDefaultShadow = BoxShadow(
   offset: Offset(0, 50),
-  blurRadius: 50,
+  blurRadius: 20,
   color: Colors.black.withOpacity(0.15),
 );
 

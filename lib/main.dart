@@ -22,7 +22,15 @@ import 'package:stpaulanglicanchurh/screens/projects/projects.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: FirebaseOptions(
+        apiKey: "AIzaSyBRqvNgAKtOaaO3f4Pi0Ef_9Zm6CixaAi8",
+        authDomain: "stpaul-anglican.firebaseapp.com",
+        databaseURL: "https://stpaul-anglican-default-rtdb.firebaseio.com",
+        projectId: "stpaul-anglican",
+        storageBucket: "stpaul-anglican.appspot.com",
+        messagingSenderId: "994383155820",
+        appId: "1:994383155820:web:317da4f5cc36e5f24bfe49",
+        measurementId: "G-N1C1WYGWTV"),
   );
   runApp(MyApp());
 }

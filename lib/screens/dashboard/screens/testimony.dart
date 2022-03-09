@@ -16,6 +16,8 @@ class TestimonyScreen extends StatefulWidget {
 
 class _TestimonyScreenState extends State<TestimonyScreen> {
   bool _isLoading = false;
+  bool _iscLoading = false;
+  bool isSwitched = false;
 
   @override
   void initState() {
@@ -26,106 +28,7 @@ class _TestimonyScreenState extends State<TestimonyScreen> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    Provider.of<DataProvider>(context, listen: false)
-        .fetchTestimony()
-        .then((value) {
-      setState(() {
-        _isLoading = false;
-      });
-    });
-    super.didChangeDependencies();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final testimony = Provider.of<DataProvider>(context).testimony;
-    return Scaffold(
-      backgroundColor: Color(0xff001242),
-      body: SafeArea(
-        child: _isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                color: Colors.white,
-              ))
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Text(
-                      'St Paul\'s Anglican Church Admin',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: defaultPadding * 2,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: defaultPadding * 3,
-                    ),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: Text(
-                        'Go Back to Dashboard',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: defaultPadding * 1.4,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Name',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white),
-                          ),
-                          Text(
-                            'Phone number',
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
-                          TextButton(onPressed: () {}, child: Text('View'))
-                        ],
-                      ),
-                    ),
-                    Container(
-                      constraints: BoxConstraints(maxWidth: 900),
-                      padding: EdgeInsets.all(defaultPadding),
-                      color: Colors.blue.shade900.withOpacity(0.1),
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: testimony.length,
-                          itemBuilder: (context, index) =>
-                              TestimonyList(testimony: testimony[index])),
-                    )
-                  ],
-                ),
-              ),
-      ),
-    );
-  }
-}
-
-class TestimonyList extends StatefulWidget {
-  final Testimony testimony;
-  TestimonyList({Key? key, required this.testimony}) : super(key: key);
-
-  @override
-  _TestimonyListState createState() => _TestimonyListState();
-}
-
-class _TestimonyListState extends State<TestimonyList> {
-  bool _isLoading = false;
-  bool isSwitched = false;
-
-  Future<void> submitChange() async {}
-
-  Future viewTestimonyDialog() {
+  Future viewTestimonyDialog(Testimony testimonyy) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -134,39 +37,46 @@ class _TestimonyListState extends State<TestimonyList> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25)),
               content: Container(
-                constraints: BoxConstraints(minHeight: 350, minWidth: 400),
+                constraints: BoxConstraints(
+                    minHeight: 350, minWidth: 400, maxWidth: 600),
                 //padding: EdgeInsets.all(defaultPadding),
                 child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Wrap(
-                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Name: ${widget.testimony.name}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
+                      Container(
+                        height: 200,
+                        width: 200,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(200),
+                          child: Image.network(
+                            testimonyy.imagePath,
+                            fit: BoxFit.fill,
                           ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Text(
-                            'Phone Number${widget.testimony.phoneNumber}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
+                        ),
+                      ),
+                      Text(
+                        'Name: ${testimonyy.name}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        'Phone Number:   ${testimonyy.phoneNumber}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                       SizedBox(
                         height: defaultPadding,
                       ),
                       Text(
-                        widget.testimony.testimony,
+                        testimonyy.testimony,
                         style: TextStyle(
                           fontSize: 16,
                         ),
@@ -176,44 +86,54 @@ class _TestimonyListState extends State<TestimonyList> {
                       ),
                       Wrap(
                         children: [
-                          Text('Make Testimony Visible on HomePage : '),
+                          Center(
+                            child: Text(
+                              'Make Testimony Visible on HomePage : ',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.bold),
+                            ),
+                          ),
                           SizedBox(
                             width: 8,
                           ),
-                          Switch(
-                              value: isSwitched,
-                              activeColor: Color(0xff31a062),
-                              inactiveTrackColor: Colors.grey.shade500,
-                              onChanged: (value) {
-                                setState(() {
-                                  isSwitched = !isSwitched;
-                                });
-                              }),
+                          Center(
+                            child: Switch(
+                                value: isSwitched,
+                                activeColor: Color(0xff31a062),
+                                inactiveTrackColor: Colors.grey.shade500,
+                                onChanged: (value) {
+                                  setState(() {
+                                    isSwitched = !isSwitched;
+                                  });
+                                }),
+                          ),
                         ],
                       ),
                       Center(
-                        child: _isLoading
+                        child: _iscLoading
                             ? CircularProgressIndicator(
                                 color: Color(0xff001242),
                               )
                             : MaterialButton(
                                 onPressed: () async {
                                   setState(() {
-                                    _isLoading = true;
+                                    _iscLoading = true;
                                   });
                                   await Provider.of<DataProvider>(context,
                                           listen: false)
                                       .updateTestimony(
-                                          widget.testimony.id,
+                                          testimonyy.id,
                                           Testimony(
-                                              widget.testimony.id,
-                                              widget.testimony.name,
-                                              widget.testimony.phoneNumber,
-                                              widget.testimony.testimony,
-                                              isSwitched))
+                                              testimonyy.id,
+                                              testimonyy.name,
+                                              testimonyy.phoneNumber,
+                                              testimonyy.testimony,
+                                              isSwitched,
+                                              testimonyy.imagePath))
                                       .then((value) {
                                     setState(() {
-                                      _isLoading = false;
+                                      _iscLoading = false;
                                       showTopSnackBar(
                                         context,
                                         CustomSnackBar.success(
@@ -249,41 +169,221 @@ class _TestimonyListState extends State<TestimonyList> {
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
-    setState(() {
-      isSwitched = widget.testimony.isVisible;
+    Provider.of<DataProvider>(context, listen: false)
+        .fetchTestimony()
+        .then((value) {
+      setState(() {
+        _isLoading = false;
+      });
     });
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                widget.testimony.name,
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white),
+    final testimony = Provider.of<DataProvider>(context).testimony;
+    return Scaffold(
+      //backgroundColor: Color(0xff001242,
+      body: SafeArea(
+        child: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                color: Color(0xff001242),
+              ))
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text(
+                      'St Paul\'s Anglican Church Admin',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Color(0xff001242),
+                          fontSize: defaultPadding * 2,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: defaultPadding * 3,
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: Text(
+                        'Go Back to Dashboard',
+                        style: TextStyle(
+                            color: Color(0xff001242),
+                            fontSize: defaultPadding * 1.4,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(
+                      height: defaultPadding,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+                      child: Table(
+                        children: [
+                          TableRow(
+                              decoration: BoxDecoration(color: Colors.white),
+                              children: [
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: defaultPadding),
+                                      child: Text(
+                                        'Name',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xff001242)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: defaultPadding),
+                                      child: Text(
+                                        'Phone number',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff001242)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: defaultPadding),
+                                      child: Text(
+                                        ' ',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color(0xff001242)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ])
+                        ],
+                      ),
+                    ),
+                    Container(
+                      //constraints: BoxConstraints(maxWidth: 900),
+                      padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+                      child: Table(
+                          border: TableBorder.all(
+                              color: Color(0xff001242),
+                              style: BorderStyle.solid,
+                              width: 2),
+                          children: List.generate(
+                              testimony.length,
+                              (index) => TableRow(
+                                      decoration: BoxDecoration(
+                                          color: index.isOdd
+                                              ? Colors.white
+                                              : Colors.grey.shade100),
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: defaultPadding),
+                                              child: Text(
+                                                testimony[index].name,
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Color(0xff001242)),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: defaultPadding),
+                                              child: Text(
+                                                testimony[index].phoneNumber,
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Color(0xff001242)),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: defaultPadding),
+                                              child: TextButton(
+                                                  onPressed: () =>
+                                                      viewTestimonyDialog(
+                                                          testimony[index]),
+                                                  child: Text('View')),
+                                            )
+                                          ],
+                                        ),
+                                      ]))
+                          // ListView.builder(
+                          //     shrinkWrap: true,
+                          //     itemCount: testimony.length,
+                          //     itemBuilder: (context, index) =>
+                          //         TestimonyList(testimony: testimony[index])),
+                          ),
+                    )
+                  ],
+                ),
               ),
-              Text(
-                widget.testimony.phoneNumber,
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-              TextButton(
-                  onPressed: () => viewTestimonyDialog(), child: Text('View'))
-            ],
-          ),
-          Divider(
-            color: Colors.white,
-            thickness: 2.0,
-          )
-        ],
       ),
     );
   }
 }
+
+// class TestimonyList extends StatefulWidget {
+//   final Testimony testimony;
+//   TestimonyList({Key? key, required this.testimony}) : super(key: key);
+
+//   @override
+//   _TestimonyListState createState() => _TestimonyListState();
+// }
+
+// class _TestimonyListState extends State<TestimonyList> {
+
+//   Future<void> submitChange() async {}
+
+
+
+//   @override
+//   void didChangeDependencies() {
+//     // TODO: implement didChangeDependencies
+//     setState(() {
+//       isSwitched = testimonyy.isVisible;
+//     });
+//     super.didChangeDependencies();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: [
+//         Text(
+//           testimonyy.name,
+//           style: TextStyle(
+//               fontSize: 16, fontWeight: FontWeight.w600, color: Color(0xff001242)),
+//         ),
+//         Text(
+//           testimonyy.phoneNumber,
+//           style: TextStyle(fontSize: 16, color: Color(0xff001242)),
+//         ),
+//         TextButton(onPressed: () => viewTestimonyDialog(), child: Text('View'))
+//       ],
+//     );
+//   }
+// }

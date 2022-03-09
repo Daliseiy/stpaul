@@ -38,8 +38,13 @@ class DataProvider with ChangeNotifier {
         final data = json.decode(response.body) as Map<String, dynamic>;
 
         data.forEach((key, value) {
-          loadedTestimony.add(Testimony(key, value['full_name'],
-              value['phone_number'], value['testimony'], value['isVisible']));
+          loadedTestimony.add(Testimony(
+              key,
+              value['full_name'],
+              value['phone_number'],
+              value['testimony'],
+              value['isVisible'],
+              value['image']));
         });
         _testimonies = loadedTestimony;
       });
@@ -58,8 +63,13 @@ class DataProvider with ChangeNotifier {
         final data = json.decode(response.body) as Map<String, dynamic>;
 
         data.forEach((key, value) {
-          loadedTestimony.add(Testimony(key, value['full_name'],
-              value['phone_number'], value['testimony'], value['isVisible']));
+          loadedTestimony.add(Testimony(
+              key,
+              value['full_name'],
+              value['phone_number'],
+              value['testimony'],
+              value['isVisible'],
+              value['testimony']));
         });
       });
       return loadedTestimony
@@ -88,8 +98,8 @@ class DataProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addTestimony(
-      String? name, String? phoneNumber, String? testimony) async {
+  Future<void> addTestimony(String? name, String? phoneNumber,
+      String? testimony, String value) async {
     var url = Uri.parse(
         'https://stpaul-anglican-default-rtdb.firebaseio.com/testimony.json');
     try {
@@ -99,7 +109,8 @@ class DataProvider with ChangeNotifier {
           'full_name': name,
           'phone_number': phoneNumber,
           'testimony': testimony,
-          'isVisible': false
+          'isVisible': true,
+          'image': value
         }),
       );
 
