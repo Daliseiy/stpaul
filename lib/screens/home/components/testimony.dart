@@ -351,18 +351,48 @@ class _TestimonySectionState extends State<TestimonySection> {
                 List<Testimony>? data = snapshot.data;
                 children = <Widget>[
                   Container(
-                    height: 1050,
-                    width: double.infinity,
-                    child: GridView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisSpacing: defaultPadding,
-                            mainAxisSpacing: defaultPadding,
-                            crossAxisCount:
-                                Responsive.isDesktop(context) ? 2 : 1),
-                        itemCount: 4,
-                        itemBuilder: (context, index) =>
-                            TestimonyCard(testimony: data![index])),
+                    constraints: BoxConstraints(minHeight: 1000),
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Column(
+                      children: !Responsive.isDesktop(context)
+                          ? [
+                              TestimonyCard(testimony: data![0]),
+                              TestimonyCard(testimony: data[1]),
+                              TestimonyCard(testimony: data[2]),
+                              TestimonyCard(testimony: data[3]),
+                            ]
+                          : [
+                              SizedBox(height: defaultPadding),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child:
+                                          TestimonyCard(testimony: data![0])),
+                                  Expanded(
+                                      child: TestimonyCard(testimony: data[1]))
+                                ],
+                              ),
+                              SizedBox(height: defaultPadding * 3),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child: TestimonyCard(testimony: data[2])),
+                                  Expanded(
+                                      child: TestimonyCard(testimony: data[3]))
+                                ],
+                              ),
+                            ],
+                    ),
+                    // child: GridView.builder(
+                    //     physics: NeverScrollableScrollPhysics(),
+                    //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    //         crossAxisSpacing: defaultPadding,
+                    //         mainAxisSpacing: defaultPadding,
+                    //         crossAxisCount:
+                    //             Responsive.isDesktop(context) ? 2 : 1),
+                    //     itemCount: 4,
+                    //     itemBuilder: (context, index) =>
+                    //         TestimonyCard(testimony: data![index])),
                   ),
                 ];
               } else if (snapshot.hasError) {
@@ -374,7 +404,7 @@ class _TestimonySectionState extends State<TestimonySection> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 16),
-                    child: Text('Error: ${snapshot.error}'),
+                    child: Text('A problem occured. Please reload the page.'),
                   )
                 ];
               } else {
@@ -382,7 +412,9 @@ class _TestimonySectionState extends State<TestimonySection> {
                   SizedBox(
                     width: 60,
                     height: 60,
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color: Color(0xff001242),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 16),
@@ -423,44 +455,70 @@ class TestimonyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 350,
-      width: 350,
-      margin: EdgeInsets.all(defaultPadding),
-      padding: EdgeInsets.all(defaultPadding),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
-          boxShadow: [kDefaultShadow]),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Transform.translate(
-          //   offset: Offset(Responsive.isDesktop(context) ? -130 : -110, -80),
-          //   child: Container(
-          //     height: Responsive.isDesktop(context) ? 120 : 120,
-          //     width: Responsive.isDesktop(context) ? 120 : 100,
-          //     decoration: BoxDecoration(
-          //         borderRadius: BorderRadius.circular(120),
-          //         image: DecorationImage(
-          //             image: AssetImage('assets/images/Testimony1.jpg'))),
-          //   ),
-          // ),
-          Text(
-            testimony.testimony,
-            style: TextStyle(
-              color: kTextColor,
-              fontSize: defaultPadding,
-              overflow: TextOverflow.ellipsis,
+    return Stack(
+      children: [
+        Container(
+          height: 370,
+          width: 370,
+          margin: EdgeInsets.all(defaultPadding),
+          padding: EdgeInsets.all(defaultPadding),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [kDefaultShadow]),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Transform.translate(
+              //   offset: Offset(Responsive.isDesktop(context) ? -30 : -30, -50),
+              //   child: Container(
+              //     height: 100,
+              //     width: 100,
+              //     decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(20),
+              //       image: DecorationImage(
+              //         image: NetworkImage(testimony.imagePath),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              Text(
+                testimony.testimony,
+                maxLines: 10,
+                style: TextStyle(
+                    color: kTextColor,
+                    fontSize: defaultPadding,
+                    overflow: TextOverflow.ellipsis,
+                    height: Responsive.isDesktop(context) ? 2 : 1.5),
+              ),
+              Spacer(),
+              Text(
+                testimony.name,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              )
+            ],
+          ),
+        ),
+        Positioned(
+          top: -40,
+          left: 0,
+          right: 0,
+          child: Container(
+            decoration: BoxDecoration(
+                //borderRadius: BorderRadius.all(Radius.circular(100)),
+                ),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100)),
+              child: Image.network(
+                testimony.imagePath,
+                height: 100,
+                width: 80,
+              ),
             ),
           ),
-          Spacer(),
-          Text(
-            testimony.name,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          )
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -64,12 +64,13 @@ class DataProvider with ChangeNotifier {
 
         data.forEach((key, value) {
           loadedTestimony.add(Testimony(
-              key,
-              value['full_name'],
-              value['phone_number'],
-              value['testimony'],
-              value['isVisible'],
-              value['testimony']));
+            key,
+            value['full_name'],
+            value['phone_number'],
+            value['testimony'],
+            value['isVisible'],
+            value['image'],
+          ));
         });
       });
       return loadedTestimony
