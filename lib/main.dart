@@ -4,8 +4,10 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:stpaulanglicanchurh/providers/auth_provider.dart';
 import 'package:stpaulanglicanchurh/providers/data_provider.dart';
 import 'package:stpaulanglicanchurh/routes/pages.dart';
+import 'package:stpaulanglicanchurh/screens/authentication/login.dart';
 import 'package:stpaulanglicanchurh/screens/dashboard/dashboard.dart';
 import 'package:stpaulanglicanchurh/screens/dashboard/screens/burials.dart';
 import 'package:stpaulanglicanchurh/screens/dashboard/screens/contacts.dart';
@@ -50,6 +52,7 @@ class MyApp extends StatelessWidget {
           value: BurialProvider(),
         ),
         ChangeNotifierProvider.value(value: DataProvider()),
+        ChangeNotifierProvider.value(value: AuthProvider())
       ],
       child: MaterialApp(
         title: 'St Paul Anglican Church',
@@ -80,6 +83,7 @@ class MyApp extends StatelessWidget {
           'contact-admin': (ctx) => ContactScreen(),
           'burial-admin': (ctx) => BurialsScreen(),
           'occassion-admin': (ctx) => OccasionScreen(),
+          'login': (ctx) => LoginPage(),
         },
       ),
     );

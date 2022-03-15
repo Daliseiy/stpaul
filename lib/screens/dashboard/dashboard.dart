@@ -1,13 +1,34 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:stpaulanglicanchurh/constant.dart';
+import 'package:stpaulanglicanchurh/providers/auth_provider.dart';
 import 'package:stpaulanglicanchurh/responsive.dart';
+import 'package:stpaulanglicanchurh/screens/authentication/login.dart';
 import 'package:stpaulanglicanchurh/screens/dashboard/links.dart';
 
-class DashBoard extends StatelessWidget {
+final FirebaseAuth _auth = FirebaseAuth.instance;
+
+class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
 
   @override
+  State<DashBoard> createState() => _DashBoardState();
+}
+
+class _DashBoardState extends State<DashBoard> {
+  void switchPage() {
+    Navigator.popAndPushNamed(context, 'login');
+    //   Navigator.pushReplacement(
+    //       context, MaterialPageRoute(builder: (ctx) => LoginPage()));
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (Provider.of<AuthProvider>(context).auth.currentUser == null) {
+      switchPage();
+    } else {}
+
     return Scaffold(
       backgroundColor: Color(0xff001242),
       body: SafeArea(
