@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:stpaulanglicanchurh/providers/auth_provider.dart';
 import 'package:stpaulanglicanchurh/responsive.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../../constant.dart';
 
@@ -35,6 +37,12 @@ class _LoginPageState extends State<LoginPage> {
       });
       Navigator.pushNamed(context, 'dashboard');
     }).catchError((err) {
+      showTopSnackBar(
+        context,
+        CustomSnackBar.error(
+          message: "Something went wrong. Please try again",
+        ),
+      );
       setState(() {
         _isLoading = false;
         //_userEmail = user.email;

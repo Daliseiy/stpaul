@@ -236,9 +236,12 @@ class _TestimonySectionState extends State<TestimonySection> {
                                       );
                                       Navigator.pop(context);
                                     }).catchError((error) {
-                                      CustomSnackBar.error(
-                                        message:
-                                            "Something went wrong. Please try again",
+                                      showTopSnackBar(
+                                        context,
+                                        CustomSnackBar.error(
+                                          message:
+                                              "Something went wrong. Please try again",
+                                        ),
                                       );
                                       setState(() {
                                         _isLoading = false;

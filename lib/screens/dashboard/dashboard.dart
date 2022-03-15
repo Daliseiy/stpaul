@@ -17,16 +17,12 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
-  void switchPage() {
-    Navigator.popAndPushNamed(context, 'login');
-    //   Navigator.pushReplacement(
-    //       context, MaterialPageRoute(builder: (ctx) => LoginPage()));
-  }
-
   @override
   Widget build(BuildContext context) {
     if (Provider.of<AuthProvider>(context).auth.currentUser == null) {
-      switchPage();
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
+      });
     } else {}
 
     return Scaffold(
