@@ -42,7 +42,6 @@ class _BurialsScreenState extends State<BurialsScreen> {
   Widget build(BuildContext context) {
     final burial = Provider.of<BurialProvider>(context).burialData;
     return Scaffold(
-      backgroundColor: Color(0xff001242),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -51,7 +50,7 @@ class _BurialsScreenState extends State<BurialsScreen> {
                 'St Paul\'s Anglican Church Admin',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    color: Colors.white,
+                    color: Color(0xff001242),
                     fontSize: defaultPadding * 2,
                     fontWeight: FontWeight.bold),
               ),
@@ -63,7 +62,7 @@ class _BurialsScreenState extends State<BurialsScreen> {
                 child: Text(
                   'Go Back to Dashboard',
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Color(0xff001242),
                       fontSize: defaultPadding * 1.4,
                       fontWeight: FontWeight.w600),
                 ),
